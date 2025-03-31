@@ -8,6 +8,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include <QPushButton>
 
 
 namespace Ui {
@@ -27,15 +28,26 @@ public slots:
     void handleNewConnection();
     void clientDisconnected();
 
+    void readClientData();
 private:
     void setupServer();
+    /* 设置按钮的样式 */
+    void setButtonStyle(QPushButton * button, const QString & filename);
+    /* 初始化按钮 */
+    void initButtons();
 
+    /* 设置按钮透明 */
+    void setButtonTransParent();
+
+    void processJsonBuffer();
+
+    void updateSensorValues(const QJsonObject &json);
 private:
     Ui::MainWindow *ui;
 
     QTcpServer *tcpServer;
     QTcpSocket *clientSocket;
-    QByteArray dataBuffer; // 用于累积接收的数据
+    QByteArray dataBuffer; // For storing incomplete data
 };
 
 #endif // MAINWINDOW_H
