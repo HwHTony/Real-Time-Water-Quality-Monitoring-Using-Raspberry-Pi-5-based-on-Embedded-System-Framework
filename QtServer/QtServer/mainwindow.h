@@ -31,16 +31,15 @@ public slots:
     void readClientData();
 private:
     void setupServer();
-    /* 设置按钮的样式 */
+    /* set buttons styles. */
     void setButtonStyle(QPushButton * button, const QString & filename);
-    /* 初始化按钮 */
+    /* init buttons. */
     void initButtons();
-
-    /* 设置按钮透明 */
+    /* set button transparent. */
     void setButtonTransParent();
-
+    /* parse json data. */
     void processJsonBuffer();
-
+    /* update senor value. */
     void updateSensorValues(const QJsonObject &json);
 private:
     Ui::MainWindow *ui;

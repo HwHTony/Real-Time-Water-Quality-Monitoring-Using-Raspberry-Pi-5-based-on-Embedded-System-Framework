@@ -32,22 +32,22 @@ MainWindow::MainWindow(QWidget *parent)
 /* 设置按钮透明 */
 void MainWindow::setButtonTransParent()
 {
-    /* 设置按钮的背景为透明色 */
+    /* set buttons backgrounds */
     ui->phVal->setStyleSheet("background-color:transparent");
-    /* 设置按钮的背景为透明色 */
+    /* set buttons backgrounds */
     ui->tempVal->setStyleSheet("background-color:transparent");
-    /* 设置按钮的背景为透明色 */
+    /* set buttons backgrounds */
     ui->turbidVal->setStyleSheet("background-color:transparent");
 }
 
 /* 设置按钮的样式 */
 void MainWindow::setButtonStyle(QPushButton * button, const QString & filename)
 {
-    /* 按钮设置图标 */
+    /* set icons */
     button->setIcon(QIcon(filename));
-    /* 设置图标大小 */
+    /* set icons size */
     button->setIconSize(QSize(button->width(), button->height()));
-    /* 设置按钮的背景为透明色 */
+    /* set button background transparent. */
     button->setStyleSheet("background-color:transparent");
 }
 
@@ -64,20 +64,20 @@ void MainWindow::initButtons()
 void MainWindow::setupServer()
 {
     // 启动服务器并监听端口
-    if (!tcpServer->listen(QHostAddress::Any, 8888)) {
+    if (!tcpServer->listen(QHostAddress::Any, 8888))
+    {
         QMessageBox::critical(this, "Server Error",
                              tr("Unable to start server: %1")
                              .arg(tcpServer->errorString()));
         return;
     }
-    qDebug() << "1111111" << endl;
-    // 连接新连接信号
+    // new connection.
     connect(tcpServer, &QTcpServer::newConnection, this, &MainWindow::handleNewConnection);
 }
 
 void MainWindow::handleNewConnection()
 {
-    // 拒绝已有连接的新请求
+    // refuse connected socket
     if (clientSocket)
     {
         QTcpSocket *newSocket = tcpServer->nextPendingConnection();
@@ -86,11 +86,11 @@ void MainWindow::handleNewConnection()
         return;
     }
 
-    // 获取客户端套接字
+    // get client socket
     clientSocket = tcpServer->nextPendingConnection();
 
     connect(clientSocket, &QTcpSocket::disconnected, this, &MainWindow::clientDisconnected);
-    connect(clientSocket, &QTcpSocket::readyRead, this, &MainWindow::readClientData);  // Add this line
+    connect(clientSocket, &QTcpSocket::readyRead, this, &MainWindow::readClientData);
 
     ui->statusLabel->setText("🔵 Client Connected: " + clientSocket->peerAddress().toString());
 }
