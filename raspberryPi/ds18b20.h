@@ -2,7 +2,7 @@
 #define DS18B20_H
 
 #include "com.h"
-// 读取温度数据的函数
+// read temperatrue
 float read_temperature();
 
 #endif
