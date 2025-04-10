@@ -11,7 +11,7 @@ void pcf8591_init()
         perror("Failed to open the i2c bus");
         exit(1);
     }
-    // 设置 I2C 从设备地址
+    // set i2c slace address
     if (ioctl(file, I2C_SLAVE, PCF8591_ADDRESS) < 0) {
         perror("Failed to acquire bus access and/or talk to slave");
         exit(1);
@@ -30,7 +30,7 @@ int pcf8591_read(int channel)
         perror("Failed to write to the i2c bus");
         return 1;
     }
-    // 读取 AIN0 通道的值
+    // read ain channel value
     if (read(file, buf, 1) != 1) {
         perror("Failed to read from the i2c bus");
         return 1;
