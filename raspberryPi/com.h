@@ -35,15 +35,15 @@
 // ---
 #include "sock.h"
 
-// --- GPIO 设定 ---
+// --- GPIO pinout ---
 #define RST_PIN 26
 #define DC_PIN  22
 #define BLK_PIN 17
 #define CS_PIN  27
 
-// --- SPI 设备路径 ---
+// --- SPI device path ---
 #define SPI_DEV "/dev/spidev0.0"
-// --- I2C 设备路径 ---
+// --- I2C device path ---
 #define I2C_DEV "/dev/i2c-1"
 
 typedef struct Param
