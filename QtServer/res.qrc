@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/ph.png</file>
+        <file>icons/temp.png</file>
+        <file>icons/turbid.png</file>
+    </qresource>
+</RCC>
