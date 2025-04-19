@@ -35,22 +35,30 @@
 // ---
 #include "sock.h"
 
-// --- GPIO pinout ---
+// --- GPIO 设定 ---
 #define RST_PIN 26
 #define DC_PIN  22
 #define BLK_PIN 17
 #define CS_PIN  27
 
-// --- SPI device path ---
+// --- SPI 设备路径 ---
 #define SPI_DEV "/dev/spidev0.0"
-// --- I2C device path ---
+// --- I2C 设备路径 ---
 #define I2C_DEV "/dev/i2c-1"
 
-typedef struct Param
-{
-    float turbidity;
-    float pH;
-    float ds18b20;
-} WaterQuality;
+// typedef struct Param
+// {
+//     float turbidity;
+//     float pH;
+//     float ds18b20;
+// } WaterQuality;
+
+class WaterQuality {
+    public:
+        float turbidity;
+        float pH;
+        float ds18b20;
+    };
+
 
 #endif
