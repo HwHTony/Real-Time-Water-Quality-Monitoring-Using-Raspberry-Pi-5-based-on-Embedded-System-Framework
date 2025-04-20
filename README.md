@@ -4,3 +4,5 @@ Water Quality Monitoring System - Raspberry Pi Client Project Overview This proj
 Sensor Data Reading and Printing: Read sensor data and print it to the terminal.
 Socket Communication: Send sensor data to the Qt server via TCP Socket.
 JSON Data Packaging: Use the cJSON library to package sensor data into JSON format and send it.
+
+#Our social media accounts:
