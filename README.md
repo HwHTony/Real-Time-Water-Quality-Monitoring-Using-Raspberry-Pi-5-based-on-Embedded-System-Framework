@@ -42,6 +42,29 @@ We need to use a static IP address here. We need to change the system's DHCP to 
 
 # Team Contributions
 
+Haoyang Zhang
+Student number: 2960798Z
+Contribution:
+
+
+Ruiyang Chen
+Student number: 2960734C
+Contribution:
+
+
+
+Binyu Wang
+Student number: 2961262W
+Contribution:
+
+
+Junhao Shen
+Student number: 2963364S
+Contribution:
+
+Jiayi Tang
+Student number: 2961024T
+Contribution:
 
 
 
