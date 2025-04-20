@@ -8,20 +8,8 @@ JSON Data Packaging: Use the cJSON library to package sensor data into JSON form
 # Our social media accounts:
 https://www.youtube.com/watch?v=Ooxhw4W-yWs
 
-# Overall picture of project
-![50e4e01c9ffe5677b40e1786a53f933(1)](https://github.com/user-attachments/assets/d5941572-d77e-4d71-8b64-4c6b96b15a7e)
-# Components of project 
-The water quality detection system adopts Raspberry Pi 5, which functions to detect temperature, turbidity, pH value, and display them through TFT screen.
-Hardware Requirements Raspberry Pi 5B
-PCF8591 Module: Used to convert analog signals to digital signals
-Jumper Wires, Breadboard, Resistor (4.7kΩ)
-pH Sensor: Measures the acidity/alkalinity of water
-![c6e5329ed70385d48ee4542adf73e48](https://github.com/user-attachments/assets/437c451b-59bb-4119-8ec6-2daaf720ab05)
-Turbidity Sensor: Measures the turbidity of water
-![02fbbc3e89fd4bab5a81e7e90fad540](https://github.com/user-attachments/assets/b61f7d3f-282b-4bd9-97ba-4c1093b6191d)
-Temperature Sensor (DS18B20): Measures water temperature
-![1f49b684e95e9e0b664cfd3a9871602](https://github.com/user-attachments/assets/d508750d-787a-474a-b918-28c4fbd435f7)
-# Build & Run
+# Introduction
+
 For the convenience of debugging the program, the first thread is enabled to transmit to the TFT screen display through multithreading, the second thread is used to output sensor data on the console, and the third thread is sent to the Qt server through a JSON string.
 Firstly, install the Raspberry Pi system, burn the system onto the TF card using the official programmer, and then start the Raspberry Pi. Need to enable I2C, SPI, SSH, etc
 
@@ -38,6 +26,23 @@ Raspberry Pi connects to Qt as a client, initializes the socket, and waits for t
 The server is developed using the Qt framework, with version QT5. The socket is initialized first, and then the client is waited for to connect. After connecting, parse the JSON string sent by Raspberry Pi and display it on the interface.
 
 We need to use a static IP address here. We need to change the system's DHCP to manual allocation, leave the gateway and mask unchanged, fill in the default IP address, and then fill in the specified IP address.
+
+
+# Overall picture of project
+![50e4e01c9ffe5677b40e1786a53f933(1)](https://github.com/user-attachments/assets/d5941572-d77e-4d71-8b64-4c6b96b15a7e)
+# Components of project 
+The water quality detection system adopts Raspberry Pi 5, which functions to detect temperature, turbidity, pH value, and display them through TFT screen.
+Hardware Requirements Raspberry Pi 5B
+PCF8591 Module: Used to convert analog signals to digital signals
+Jumper Wires, Breadboard, Resistor (4.7kΩ)
+pH Sensor: Measures the acidity/alkalinity of water
+![c6e5329ed70385d48ee4542adf73e48](https://github.com/user-attachments/assets/437c451b-59bb-4119-8ec6-2daaf720ab05)
+Turbidity Sensor: Measures the turbidity of water
+![02fbbc3e89fd4bab5a81e7e90fad540](https://github.com/user-attachments/assets/b61f7d3f-282b-4bd9-97ba-4c1093b6191d)
+Temperature Sensor (DS18B20): Measures water temperature
+![1f49b684e95e9e0b664cfd3a9871602](https://github.com/user-attachments/assets/d508750d-787a-474a-b918-28c4fbd435f7)
+# Build & Run
+
 
 # Process Chart
 ![flow chart](https://github.com/user-attachments/assets/297fcfe7-f17d-4489-b724-0cd23fd9fe1a)
