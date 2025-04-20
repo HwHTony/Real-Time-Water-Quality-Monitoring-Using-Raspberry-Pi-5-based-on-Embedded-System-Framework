@@ -5,7 +5,8 @@ Sensor Data Reading and Printing: Read sensor data and print it to the terminal.
 Socket Communication: Send sensor data to the Qt server via TCP Socket.
 JSON Data Packaging: Use the cJSON library to package sensor data into JSON format and send it.
 
-# Our social media accounts:https://www.youtube.com/watch?v=Ooxhw4W-yWs
+# Our social media accounts:
+https://www.youtube.com/watch?v=Ooxhw4W-yWs
 
 # Overall picture of project
 ![50e4e01c9ffe5677b40e1786a53f933(1)](https://github.com/user-attachments/assets/d5941572-d77e-4d71-8b64-4c6b96b15a7e)
