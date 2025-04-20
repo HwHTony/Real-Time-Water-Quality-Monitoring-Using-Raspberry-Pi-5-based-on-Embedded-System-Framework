@@ -39,6 +39,8 @@ The server is developed using the Qt framework, with version QT5. The socket is 
 We need to use a static IP address here. We need to change the system's DHCP to manual allocation, leave the gateway and mask unchanged, fill in the default IP address, and then fill in the specified IP address.
 
 # Process Chart
+![flow chart](https://github.com/user-attachments/assets/297fcfe7-f17d-4489-b724-0cd23fd9fe1a)
+
 
 # Team Contributions
 
