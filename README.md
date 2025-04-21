@@ -74,7 +74,7 @@ Contribution:
 2. Team work division arrangement;
 3. The PCF8591 implements AD conversion of data measured by the pH sensor and turbidity sensor;
 4. Purchase and commissioning of hardware equipment;
-5.PPT preparation and presentation for pitching event;
+5. PPT preparation and presentation for pitching event;
 
 Ruiyang Chen
 Student number: 2960734C
