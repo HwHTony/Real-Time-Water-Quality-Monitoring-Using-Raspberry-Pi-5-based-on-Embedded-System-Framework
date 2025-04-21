@@ -67,7 +67,7 @@ SEN0189 works on the principle of infrared transmitted light method, when the mo
 
 # Team Contributions
 
-Haoyang Zhang(Project Leader)
+Haoyang Zhang(Team Leader)
 Student number: 2960798Z
 Contribution:
 1. Project overall underlying code construction;
