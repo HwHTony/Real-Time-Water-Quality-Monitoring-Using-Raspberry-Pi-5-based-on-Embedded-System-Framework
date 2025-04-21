@@ -56,7 +56,7 @@ void* sock_info(void *arg) {
 
 int main() {
     int sock;
-    char serv_ip[] = "192.168.43.26";
+    char serv_ip[] = "192.168.1.2";
     int port = 8888;
     Socket::connectToServer(&sock, serv_ip, port);
     cout << "Connection successful: " << serv_ip << ":" << port << endl;
