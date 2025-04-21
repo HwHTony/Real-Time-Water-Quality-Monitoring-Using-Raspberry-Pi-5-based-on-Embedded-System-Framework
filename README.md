@@ -79,10 +79,9 @@ Contribution:
 Ruiyang Chen
 Student number: 2960734C
 Contribution:
-1. Calculation and debugging of the measured data is achieved through code, and the design of specific hardware wiring diagrams;
-2. Participated in the design and compilation of main.cpp & PCF8591;
-3. Water quality testing turbidity part of the code writing and hardware function implementation;
-
+1. Calculation and debugging of the measured data is achieved through code;
+2. The design of specific hardware wiring diagrams;
+3. Participated in the design and compilation of main.cpp & PCF8591;
 
 Binyu Wang
 Student number: 2961262W
