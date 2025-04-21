@@ -41,6 +41,9 @@ Turbidity Sensor: Measures the turbidity of water
 ![02fbbc3e89fd4bab5a81e7e90fad540](https://github.com/user-attachments/assets/b61f7d3f-282b-4bd9-97ba-4c1093b6191d)
 Temperature Sensor (DS18B20): Measures water temperature
 ![1f49b684e95e9e0b664cfd3a9871602](https://github.com/user-attachments/assets/d508750d-787a-474a-b918-28c4fbd435f7)
+PCF8591：
+![19729c9f3a2c1abfaade235661d40ab](https://github.com/user-attachments/assets/19c434bb-860c-401d-890d-76d1b494f9bb)
+
 # Operating principle and realisation logic of the sensor 
 
 1. DS18B20 (temperature sensor) 
