@@ -74,7 +74,7 @@ Contribution:
 2. Team work division arrangement;
 3. The PCF8591 implements AD conversion of data measured by the pH sensor and turbidity sensor;
 4. Purchase and commissioning of hardware equipment;
-
+5.PPT preparation and presentation for pitching event;
 
 Ruiyang Chen
 Student number: 2960734C
@@ -82,6 +82,7 @@ Contribution:
 1. Calculation and debugging of the measured data is achieved through code;
 2. The design of specific hardware wiring diagrams;
 3. Participated in the design and compilation of main.cpp & PCF8591;
+4. PPT preparation and presentation for pitching event;
 
 Binyu Wang
 Student number: 2961262W
