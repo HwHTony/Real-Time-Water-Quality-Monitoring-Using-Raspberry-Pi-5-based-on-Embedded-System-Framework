@@ -41,8 +41,16 @@ Turbidity Sensor: Measures the turbidity of water
 ![02fbbc3e89fd4bab5a81e7e90fad540](https://github.com/user-attachments/assets/b61f7d3f-282b-4bd9-97ba-4c1093b6191d)
 Temperature Sensor (DS18B20): Measures water temperature
 ![1f49b684e95e9e0b664cfd3a9871602](https://github.com/user-attachments/assets/d508750d-787a-474a-b918-28c4fbd435f7)
-# Build & Run
+# Operating principle and realisation logic of the sensor 
 
+1. DS18B20 (temperature sensor) 
+DS18B20 uses a single bus (1-Wire) protocol to communicate with the main control and can read data directly through the GPIO port. Its internal temperature sensor and digital conversion module are integrated, and the measurement resolution is 9~12 bits, default 12 bits. After the Raspberry Pi is configured with /sys/bus/w1/devices, read the raw data in the w1_slave file, extract the value after t= and divide by 1000 to get the Celsius temperature.
+
+2. E201-C BNC (pH electrode) 
+The E201-C is a glass electrode type sensor that works based on the potentiometric principle, where the electrode produces different voltage outputs (approximately -414mV to +414mV, corresponding to pH 0~14) in different pH solutions. Since the output is an analogue signal, it needs to be converted to a digital value by an ADC module such as PCF8591, and then the corresponding pH value is calculated by calibration. 
+
+3. SKU:SEN0189 (turbidity sensor) 
+SEN0189 works on the principle of infrared transmitted light method, when the more suspended solids in the water, the lower the transmittance, the lower the analogue voltage output of the sensor. Need to access the AD conversion module (PCF8591), the voltage value is converted to digital, through the table or linear fitting model converted to NTU turbidity units. 
 
 # Process Chart
 ![flow chart](https://github.com/user-attachments/assets/297fcfe7-f17d-4489-b724-0cd23fd9fe1a)
