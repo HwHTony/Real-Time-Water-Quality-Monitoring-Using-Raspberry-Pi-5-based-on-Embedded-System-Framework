@@ -37,6 +37,7 @@ PCF8591 Module: Used to convert analog signals to digital signals
 Jumper Wires, Breadboard, Resistor (4.7kΩ)
 pH Sensor: Measures the acidity/alkalinity of water
 ![c6e5329ed70385d48ee4542adf73e48](https://github.com/user-attachments/assets/437c451b-59bb-4119-8ec6-2daaf720ab05)
+Fig1
 Turbidity Sensor: Measures the turbidity of water
 ![02fbbc3e89fd4bab5a81e7e90fad540](https://github.com/user-attachments/assets/b61f7d3f-282b-4bd9-97ba-4c1093b6191d)
 Temperature Sensor (DS18B20): Measures water temperature
