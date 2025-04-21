@@ -70,18 +70,18 @@ SEN0189 works on the principle of infrared transmitted light method, when the mo
 Haoyang Zhang
 Student number: 2960798Z
 Contribution:
-1.Project overall underlying code construction;
-2.Team work division arrangement;
-3.Water quality testing PH part of the code writing and hardware function implementation;
-4.Purchase and commissioning of hardware equipment;
+1. Project overall underlying code construction;
+2. Team work division arrangement;
+3. Water quality testing PH part of the code writing and hardware function implementation;
+4. Purchase and commissioning of hardware equipment;
 
 
 Ruiyang Chen
 Student number: 2960734C
 Contribution:
-1.Water quality detection temperature part of the code writing and hardware function implementation;
-2.Water quality testing turbidity part of the code writing and hardware function implementation;
-3.Commissioning of hardware devices;
+1. Water quality detection temperature part of the code writing and hardware function implementation;
+2. Water quality testing turbidity part of the code writing and hardware function implementation;
+3. Commissioning of hardware devices;
 
 
 Binyu Wang
