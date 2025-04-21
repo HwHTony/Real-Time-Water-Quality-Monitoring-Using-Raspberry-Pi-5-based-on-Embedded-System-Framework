@@ -93,14 +93,14 @@ Contribution:
 Junhao Shen
 Student number: 2963364S
 Contribution:
-1. report in the production of tables;
+1. Report in the production of tables;
 2. report of the text content preparation;
 
 Jiayi Tang
 Student number: 2961024T
 Contribution:
-1. run the code to check for errors ;
-2. shoot a video to upload to YouTube;
+1. Run the code to check for errors ;
+2. Shoot a video to upload to YouTube;
 
 
 
