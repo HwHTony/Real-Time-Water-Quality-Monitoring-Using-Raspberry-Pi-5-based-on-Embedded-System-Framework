@@ -31,9 +31,6 @@ We need to use a static IP address here. We need to change the system's DHCP to 
  System Design
 
 
-![2](https://github.com/user-attachments/assets/f0488367-eecc-4e08-8662-61429aba6d48)
- System architecture
-
 
 # Overall picture of project
 ![50e4e01c9ffe5677b40e1786a53f933(1)](https://github.com/user-attachments/assets/d5941572-d77e-4d71-8b64-4c6b96b15a7e)
@@ -56,7 +53,8 @@ Turbidity Sensor: Measures the turbidity of water
 ![1f49b684e95e9e0b664cfd3a9871602](https://github.com/user-attachments/assets/d508750d-787a-474a-b918-28c4fbd435f7)
 Temperature Sensor (DS18B20): Measures water temperature
 
-
+![2](https://github.com/user-attachments/assets/f0488367-eecc-4e08-8662-61429aba6d48)
+ System architecture
 # Operating principle and realisation logic of the sensor 
 
 1. DS18B20 (temperature sensor) 
