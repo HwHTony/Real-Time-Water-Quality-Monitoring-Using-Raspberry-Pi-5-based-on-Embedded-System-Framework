@@ -28,11 +28,11 @@ The server is developed using the Qt framework, with version QT5. The socket is 
 We need to use a static IP address here. We need to change the system's DHCP to manual allocation, leave the gateway and mask unchanged, fill in the default IP address, and then fill in the specified IP address.
 
 ![1](https://github.com/user-attachments/assets/c9dcb563-d6e5-48de-8d94-78cf769b9a8f)
-System Design
+ System Design
 
 
 ![2](https://github.com/user-attachments/assets/f0488367-eecc-4e08-8662-61429aba6d48)
-system architecture
+ System architecture
 
 
 # Overall picture of project
