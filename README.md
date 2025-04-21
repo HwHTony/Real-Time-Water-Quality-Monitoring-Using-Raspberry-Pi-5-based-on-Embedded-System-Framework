@@ -70,18 +70,18 @@ SEN0189 works on the principle of infrared transmitted light method, when the mo
 Haoyang Zhang(Team Leader)
 Student number: 2960798Z
 Contribution:
-1. Project overall underlying code construction;
+1. Build the main structure of the system (main.cpp writing and debugging), Qt server building, debugging and implementation;;
 2. Team work division arrangement;
-3. Water quality testing PH part of the code writing and hardware function implementation;
+3. The PCF8591 implements AD conversion of data measured by the pH sensor and turbidity sensor;
 4. Purchase and commissioning of hardware equipment;
 
 
 Ruiyang Chen
 Student number: 2960734C
 Contribution:
-1. Water quality detection temperature part of the code writing and hardware function implementation;
-2. Water quality testing turbidity part of the code writing and hardware function implementation;
-3. Commissioning of hardware devices;
+1. Calculation and debugging of the measured data is achieved through code, and the design of specific hardware wiring diagrams;
+2. Participated in the design and compilation of main.cpp & PCF8591;
+3. Water quality testing turbidity part of the code writing and hardware function implementation;
 
 
 Binyu Wang
