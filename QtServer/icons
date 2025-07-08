@@ -1,1 +1,11 @@
+cd "C:/Users/Lenovo/Desktop/MyRepo"
 
+cp -r "C:/Users/Lenovo/Desktop/icons" "./"
+
+git status
+
+git add icons
+
+git commit -m "feat: add icons folder"
+
+git push origin main
