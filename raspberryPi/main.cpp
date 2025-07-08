@@ -8,6 +8,7 @@
 #include <sys/timerfd.h>
 #include <thread>
 #include <atomic>
+#include <functional> 
 
 using namespace std;
 
@@ -29,7 +30,7 @@ private:
     int epoll_fd;
     static const int MAX_EVENTS = 10;
     epoll_event events[MAX_EVENTS];
-   
+    
 public:
     EventLoop() {
         epoll_fd = epoll_create1(0);
@@ -38,22 +39,22 @@ public:
             exit(EXIT_FAILURE);
         }
     }
-   
+    
     ~EventLoop() {
         close(epoll_fd);
     }
-   
+    
     void add_fd(int fd, function<void()> handler) {
         epoll_event ev;
         ev.events = EPOLLIN | EPOLLET;
         ev.data.ptr = new function<void()>(handler);
-       
+        
         if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &ev) == -1) {
             perror("epoll_ctl: add");
             exit(EXIT_FAILURE);
         }
     }
-   
+    
     void run() {
         while (g_running) {
             int nfds = epoll_wait(epoll_fd, events, MAX_EVENTS, -1);
@@ -62,7 +63,7 @@ public:
                 perror("epoll_wait");
                 exit(EXIT_FAILURE);
             }
-           
+            
             for (int i = 0; i < nfds; ++i) {
                 if (events[i].events & EPOLLIN) {
                     auto handler = static_cast<function<void()>*>(events[i].data.ptr);
@@ -80,17 +81,17 @@ int create_timer_fd(int interval_ms) {
         perror("timerfd_create");
         exit(EXIT_FAILURE);
     }
-   
+    
     itimerspec its;
     its.it_interval.tv_sec = interval_ms / 1000;
     its.it_interval.tv_nsec = (interval_ms % 1000) * 1000000;
     its.it_value = its.it_interval;
-   
+    
     if (timerfd_settime(fd, 0, &its, NULL) == -1) {
         perror("timerfd_settime");
         exit(EXIT_FAILURE);
     }
-   
+    
     return fd;
 }
 
@@ -115,27 +116,27 @@ void update_debug_info() {
 void update_tft_info() {
     static TFTFreetype tft;
     static wchar_t turb[BUFFER_SIZE] = {0};
-   
+    
     memset(turb, ' ', BUFFER_SIZE);
     swprintf(turb, sizeof(turb) / sizeof(wchar_t), L"浊度: %.2f", g_water_quality.turbidity);
     tft.drawString(5, 20, turb,  0xFFFF);
-   
+    
     swprintf(turb, sizeof(turb) / sizeof(wchar_t), L"温度: %.2f℃", g_water_quality.ds18b20);
     tft.drawString(5, 50, turb,  0xFFFF);
-   
+    
     swprintf(turb, sizeof(turb) / sizeof(wchar_t), L"pH: %.2f", g_water_quality.pH);
     tft.drawString(5, 80, turb,  0xFFFF);
-   
+    
     tft.fillScreen(0x0000);
 }
 
 // 套接字通信函数
 void update_socket_info(int sock) {
     char buf[128] = {0};
-    sprintf(buf, "{\"tur\":\"%.2f\", \"tmp\":\"%.2f\", \"pH\":\"%.2f\"}",
+    sprintf(buf, "{\"tur\":\"%.2f\", \"tmp\":\"%.2f\", \"pH\":\"%.2f\"}", 
            g_water_quality.turbidity, g_water_quality.ds18b20, g_water_quality.pH);
     cout << buf << endl;
-   
+    
     send(sock, buf, strlen(buf), 0);
 }
 
@@ -168,47 +169,47 @@ int main() {
 
     // 创建事件循环
     EventLoop loop;
-   
+    
     // 创建数据采集定时器(1秒)
     int data_timer_fd = create_timer_fd(1000);
     loop.add_fd(data_timer_fd, [&]() {
         read_timer_fd(data_timer_fd);
-       
+        
         static DS18B20 ds18b20;
         static int channels[] = {0, 1};
-        static int numChannels = sizeof(channels) / sizeof(channels[0]);
-        static int results[numChannels];
-       
+        static int numChannels = 2;
+        static int results[2];
+        
         pcf8591.readMultiple(channels, numChannels, results);
         g_water_quality.turbidity = 100 - results[0] * 100.0 / 255;
         g_water_quality.ds18b20 = ds18b20.readTemperature();
         g_water_quality.pH = 14.0 - results[1] * 14.0/255.0;
     });
-   
+    
     // 创建调试信息定时器(1秒)
     int debug_timer_fd = create_timer_fd(1000);
     loop.add_fd(debug_timer_fd, [&]() {
         read_timer_fd(debug_timer_fd);
         update_debug_info();
     });
-   
+    
     // 创建TFT显示定时器(1秒)
     int tft_timer_fd = create_timer_fd(1000);
     loop.add_fd(tft_timer_fd, [&]() {
         read_timer_fd(tft_timer_fd);
         update_tft_info();
     });
-   
+    
     // 创建套接字通信定时器(1秒)
     int sock_timer_fd = create_timer_fd(1000);
     loop.add_fd(sock_timer_fd, [&]() {
         read_timer_fd(sock_timer_fd);
         update_socket_info(sock);
     });
-   
+    
     // 运行事件循环
     loop.run();
-   
+    
     // 清理资源
     close(data_timer_fd);
     close(debug_timer_fd);
