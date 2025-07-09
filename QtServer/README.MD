@@ -1,1 +1,0 @@
-this is qt server
