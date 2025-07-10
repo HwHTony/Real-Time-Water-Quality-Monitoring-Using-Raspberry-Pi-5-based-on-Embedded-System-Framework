@@ -1,14 +1,15 @@
-#include "main.cpp"
+#include "../main.cpp"
 #include <gtest/gtest.h>
 
 // 模拟 PCF8591 类
 class MockPCF8591 : public PCF8591 {
 public:
-    void readMultiple(int* channels, int numChannels, int* results) override {
+    int readMultiple(int* channels, int numChannels, int* results) override {
         // 模拟读取结果
         for (int i = 0; i < numChannels; ++i) {
             results[i] = 128; // 模拟固定值
         }
+        return 0; // 模拟成功返回 0
     }
 };
 
@@ -98,7 +99,8 @@ TEST(MainTest, UpdateSocketInfo) {
     EXPECT_TRUE(output.find(expected) != std::string::npos);
 }
 
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
+// 删除自定义的 main 函数，使用 Google Test 提供的 main 函数
+// int main(int argc, char **argv) {
+//     ::testing::InitGoogleTest(&argc, argv);
+//     return RUN_ALL_TESTS();
+// }
