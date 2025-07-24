@@ -96,7 +96,7 @@ if(BUILD_TESTS)
             VERBATIM
         )
         
-        # 确保测试运行后再生成覆盖率报告
+        # Make sure to generate the coverage report after the test run is completed.
         add_dependencies(coverage water_quality_monitor_test)
     endif()
 endif()
