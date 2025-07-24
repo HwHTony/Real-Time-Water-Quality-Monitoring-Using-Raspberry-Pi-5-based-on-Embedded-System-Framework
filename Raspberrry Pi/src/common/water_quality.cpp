@@ -1,5 +1,5 @@
 // water_quality.cpp
 #include "water_quality.h"
 
-// 定义静态实例
+// Define static instances
 WaterQuality WaterQuality::instance;
