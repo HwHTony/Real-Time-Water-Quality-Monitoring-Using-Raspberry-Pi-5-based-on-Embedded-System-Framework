@@ -1,72 +1,72 @@
 #include "event_loop.h"
 #include <iostream>
 #include <cstring>
-#include <unistd.h>  // 提供close()函数，用于关闭文件描述符
+#include <unistd.h>  // Provides the close() function to close file descriptors
 
 /**
- * @brief 事件循环构造函数，初始化epoll实例
- * @param run 外部传入的原子布尔变量，用于控制循环启停
- * @throws 若epoll_create1失败，输出错误信息并终止程序
+ * @brief Event loop constructor, initialise epoll instance
+ * @param run External atomic Boolean variable used to control loop start/stop
+ * @throws If epoll_create1 fails, output an error message and terminate the program
  */
 EventLoop::EventLoop(std::atomic<bool>& run) : running(run) {
-    // 创建epoll实例（使用epoll_create1(0)自动选择最佳模式）
+    // Create an epoll instance (use epoll_create1(0) to automatically select the best mode)
     epoll_fd = epoll_create1(0);
     if (epoll_fd == -1) {
-        perror("epoll_create1");  // 输出系统调用错误信息
-        std::exit(EXIT_FAILURE);  // 异常退出程序
+        perror("epoll_create1");  // Output system call error message
+        std::exit(EXIT_FAILURE);  // Abnormal program termination
     }
 }
 
 /**
- * @brief 事件循环析构函数，清理资源
- * @note 关闭epoll实例的文件描述符，防止资源泄漏
+ * @brief Event loop destructor, clean up resources
+ * @note Close the file descriptors of the epoll instance to prevent resource leaks
  */
 EventLoop::~EventLoop() {
-    close(epoll_fd);  // 关闭epoll文件描述符
+    close(epoll_fd);  // Close the epoll file descriptor
 }
 
 /**
- * @brief 向事件循环添加文件描述符及对应处理函数
- * @param fd 待监听的文件描述符（如定时器fd、套接字fd）
- * @param handler 事件触发时执行的回调函数
- * @throws 若epoll_ctl失败，输出错误信息并终止程序
- * @note 使用边缘触发模式(EPOLLET)，需确保处理函数读取/写入完全
+ * @brief Add file descriptors and corresponding handling functions to the event loop
+ * @param fd File descriptors to be monitored (such as timer fds, socket fds)
+ * @param handler Callback function executed when an event is triggered
+ * @throws If epoll_ctl fails, output an error message and terminate the program
+ * @note When using edge-triggered mode (EPOLLET), ensure that the processing function reads/writes completely
  */
 void EventLoop::add_fd(int fd, std::function<void()> handler) {
     epoll_event ev;
-    ev.events = EPOLLIN | EPOLLET;  // 设置监听读事件并使用边缘触发模式
-    // 将处理函数指针存入ev.data.ptr（需动态分配内存）
+    ev.events = EPOLLIN | EPOLLET;  // Set up a read event listener and use edge trigger mode
+    // Store the processing function pointer in ev.data.ptr（Dynamic memory allocation required）
     ev.data.ptr = new std::function<void()>(handler);
 
-    // 将文件描述符添加到epoll实例中
+    // Add file descriptors to the epoll instance
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &ev) == -1) {
-        perror("epoll_ctl: add");  // 输出添加失败信息
-        std::exit(EXIT_FAILURE);   // 异常退出程序
+        perror("epoll_ctl: add");  // Output failed addition information
+        std::exit(EXIT_FAILURE);   // Abnormal program termination
     }
 }
 
 /**
- * @brief 启动事件循环，开始监听并处理事件
- * @note 循环持续运行直到外部设置running为false
- * @note 使用epoll_wait阻塞等待事件，支持处理信号中断(EINTR)
+ * @brief Start the event loop, begin listening for and processing events
+ * @note The loop continues to run until the external setting running is set to false
+ * @note Use epoll_wait to block and wait for events, supporting signal interrupts (EINTR)
  */
 void EventLoop::run() {
-    while (running) {  // 原子变量控制循环启停（线程安全）
-        // 等待事件发生（-1表示无限阻塞，直到有事件触发）
+    while (running) {  // Atomic variable control loop start/stop (thread-safe)
+        // 等待事件发生（-1 indicates infinite blocking until an event is triggered）
         int nfds = epoll_wait(epoll_fd, events, MAX_EVENTS, -1);
         if (nfds == -1) {
-            if (errno == EINTR)  // 处理被信号中断的情况
-                continue;        // 忽略中断，继续等待事件
-            perror("epoll_wait");  // 输出其他错误信息
-            std::exit(EXIT_FAILURE);  // 异常退出程序
+            if (errno == EINTR)  // Handling signal interruptions
+                continue;        // Ignore interrupts and continue waiting for events
+            perror("epoll_wait");  // Output other error messages
+            std::exit(EXIT_FAILURE);  // Abnormal program termination
         }
 
-        // 遍历所有触发的事件
+        // Iterate through all triggered events
         for (int i = 0; i < nfds; ++i) {
-            if (events[i].events & EPOLLIN) {  // 检查是否为读事件
-                // 从data.ptr中获取处理函数指针并调用
+            if (events[i].events & EPOLLIN) {  // Check whether it is a read event
+                // 从data.ptrObtain the processing function pointer and call it
                 auto handler = static_cast<std::function<void()>*>(events[i].data.ptr);
-                (*handler)();  // 执行事件处理函数
+                (*handler)();  // Execute event handling function
             }
         }
     }
