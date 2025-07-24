@@ -3,53 +3,53 @@
 #define EVENT_LOOP_H
 /**
  * @file event_loop.h
- * @brief 基于epoll的事件循环类，用于高效处理多路I/O事件（如定时器、网络套接字等）
- * @note 线程安全设计，通过原子变量控制循环启停，支持动态添加文件描述符及事件处理函数
+ * @brief An event loop class based on epoll, used for efficient processing of multi-channel I/O events (such as timers, network sockets, etc.)
+ * @note Thread-safe design, controlling loop start and stop through atomic variables, supporting dynamic addition of file descriptors and event handling functions
  */
 
-#include <functional>   // 用于std::function（事件处理回调）
-#include <sys/epoll.h>  // 用于epoll相关系统调用（epoll_create, epoll_ctl, epoll_wait等）
-#include <atomic>       // 用于std::atomic<bool>（线程安全的循环状态控制）
+#include <functional>   // Used for std::function (event handling callback)
+#include <sys/epoll.h>  // Used for epoll-related system calls (epoll_create, epoll_ctl, epoll_wait, etc.)
+#include <atomic>       // Used for std::atomic<bool> (thread-safe loop state control)
 
 /**
  * @class EventLoop
- * @brief 事件循环核心类，封装epoll机制实现I/O多路复用
+ * @brief Event loop core class, encapsulating the epoll mechanism to implement I/O multiplexing
  * 
- * 功能：管理多个文件描述符（如定时器fd、网络套接字fd），通过epoll_wait等待事件触发，
- * 并自动调用注册的回调函数处理事件。支持通过原子变量动态停止循环。
+ * Function: Manage multiple file descriptors (such as timer fds and network socket fds) and wait for events to be triggered using epoll_wait,
+ * And automatically call the registered callback function to handle events. Supports dynamically stopping the loop through atomic variables.
  */
 class EventLoop {
 private:
-    int epoll_fd;  ///< epoll实例的文件描述符，通过epoll_create创建
-    static const int MAX_EVENTS = 10;  ///< 单次epoll_wait最多处理的事件数
-    epoll_event events[MAX_EVENTS];    ///< 存储epoll_wait返回的事件列表
-    std::atomic<bool>& running;  ///< 原子布尔引用，控制事件循环是否运行（线程安全）
+    int epoll_fd;  ///< The file descriptor of the epoll instance, created via epoll_create
+    static const int MAX_EVENTS = 10;  ///< Maximum number of events processed by a single epoll_wait
+    epoll_event events[MAX_EVENTS];    ///< Store the event list returned by epoll_wait
+    std::atomic<bool>& running;  ///< Atomic Boolean reference, controls whether the event loop runs (thread-safe)
 
 public:
     /**
-     * @brief 构造函数，初始化epoll实例并绑定循环控制变量
-     * @param run 原子布尔变量的引用，用于外部控制事件循环的启停
+     * @brief Constructor, initialise the epoll instance and bind the loop control variable
+     * @param run Reference to an atomic Boolean variable used to start and stop the external control event loop
      */
     EventLoop(std::atomic<bool>& run);
 
     /**
-     * @brief 析构函数，清理epoll资源
-     * @note 关闭epoll实例的文件描述符，释放系统资源
+     * @brief Destructor, clean up epoll resources
+     * @note Close the file descriptor of the epoll instance and release system resources
      */
     ~EventLoop();
 
     /**
-     * @brief 向事件循环添加文件描述符及对应的事件处理函数
-     * @param fd 要监听的文件描述符（如定时器fd、套接字fd）
-     * @param handler 事件触发时的回调函数（无参数，无返回值）
-     * @note 默认为水平触发（EPOLLIN），可根据需求扩展事件类型
+     * @brief Add file descriptors and corresponding event handling functions to the event loop
+     * @param fd File descriptors to be monitored (such as timer fd, socket fd)
+     * @param handler Callback function when the event is triggered (no parameters, no return value)
+     * @note The default is horizontal triggering (EPOLLIN), and event types can be expanded as needed
      */
     void add_fd(int fd, std::function<void()> handler);
 
     /**
-     * @brief 启动事件循环，持续等待并处理事件
-     * @note 循环逻辑：通过epoll_wait阻塞等待事件，遍历触发的事件并调用对应的回调函数，
-     *       直到running变量被设为false时退出循环
+     * @brief Start the event loop, continuously wait for and process events
+     * @note Loop logic: Block and wait for events using epoll_wait, iterate through the triggered events, and call the corresponding callback functions,
+     *       Exit the loop when the running variable is set to false.
      */
     void run();
 };
