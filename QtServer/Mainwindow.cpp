@@ -11,10 +11,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowTitle("Water Quality Monitor");
     
-    // 初始化UI组件
+    // Initializing UI components
     initUI();
     
-    // 初始化TCP服务器（业务层）并建立信号槽连接
+    // Initialize the TCP server (business layer) and establish a signal-slot connection
     TcpServer* tcpServer = new TcpServer(8888, this);
     connect(tcpServer, &TcpServer::sensorDataUpdated,
             this, &MainWindow::onSensorDataUpdated);
@@ -27,24 +27,24 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-// 初始化UI（按钮样式、初始值等）
+// Initialize UI (button style, initial value, etc.)
 void MainWindow::initUI()
 {
-    // 初始化传感器显示值
+    // Initialize sensor display value
     ui->phVal->setText("0.0");
     ui->tempVal->setText("0.0℃");
     ui->turbidVal->setText("0.0");
     
-    // 设置按钮样式
+    // Setting the button style
     setButtonStyle(ui->phBtn, ":/icons/ph.png");
     setButtonStyle(ui->tempBtn, ":/icons/temp.png");
     setButtonStyle(ui->turbidBtn, ":/icons/turbid.png");
     
-    // 设置文本框透明背景
+    // Set the text box transparent background
     setButtonTransParent();
 }
 
-// 设置按钮样式（封装UI细节）
+// Set button style (encapsulate UI details)
 void MainWindow::setButtonStyle(QPushButton *button, const QString &iconPath)
 {
     button->setIcon(QIcon(iconPath));
@@ -52,7 +52,7 @@ void MainWindow::setButtonStyle(QPushButton *button, const QString &iconPath)
     button->setStyleSheet("background-color:transparent");
 }
 
-// 设置文本框透明背景
+// Set the text box transparent background
 void MainWindow::setButtonTransParent()
 {
     ui->phVal->setStyleSheet("background-color:transparent");
@@ -60,7 +60,7 @@ void MainWindow::setButtonTransParent()
     ui->turbidVal->setStyleSheet("background-color:transparent");
 }
 
-// 接收业务层数据并更新UI
+// Receive business layer data and update the UI
 void MainWindow::onSensorDataUpdated(const QJsonObject &data)
 {
     if (data.contains("tur")) {
@@ -77,7 +77,7 @@ void MainWindow::onSensorDataUpdated(const QJsonObject &data)
     }
 }
 
-// 接收连接状态并更新UI
+// Receive connection status and update UI
 void MainWindow::onConnectionStatusChanged(const QString &status)
 {
     ui->statusLabel->setText(status);
