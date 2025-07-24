@@ -4,15 +4,15 @@
 
 #include <cstdint>
 
-// --- GPIO 设定 ---
+// --- GPIO Set ---
 constexpr int RST_PIN = 26;
 constexpr int DC_PIN  = 22;
 constexpr int BLK_PIN = 17;
 constexpr int CS_PIN  = 27;
 
-// --- SPI 设备路径 ---
+// --- SPI Equipment path ---
 constexpr const char* SPI_DEV = "/dev/spidev0.0";
-// --- I2C 设备路径 ---
+// --- I2C Equipment path ---
 constexpr const char* I2C_DEV = "/dev/i2c-1";
 
 // --- pcf8591 ---
