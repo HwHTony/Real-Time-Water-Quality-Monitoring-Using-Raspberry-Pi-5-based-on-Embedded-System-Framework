@@ -1,4 +1,4 @@
-# 设置 CMake 的最低版本要求
+# Set the minimum version requirement for CMake
 cmake_minimum_required(VERSION 3.10)
 
 # 设置项目名称
