@@ -1,42 +1,42 @@
 /**
  * @file socket_info_updater.h
- * @brief 网络套接字信息更新器类接口，负责通过网络发送水质数据
- * @details 定义了通过已连接的套接字将实时水质监测数据发送到服务器的功能，
- *          继承自InfoUpdater抽象基类，实现了网络数据发送的具体逻辑，
- *          是系统中"数据输出到网络"的核心模块。
+ * @brief Network socket information updater class interface, responsible for sending water quality data over the network
+ * @details Defines the functionality to send real-time water quality monitoring data to the server through the connected socket,
+ *          Inherited from the InfoUpdater abstract base class, it implements the specific logic for sending network data,
+ *          It is the core module of ‘data output to the network’ in the system.
  */
 
 #ifndef SOCKET_INFO_UPDATER_H
 #define SOCKET_INFO_UPDATER_H
 
-#include "../common/com.h"              // 公共类型及工具函数定义
-#include "../common/water_quality.h"    // 水质数据单例类，用于获取待发送数据
-#include "info_updater.h"               // 信息更新器基类，提供统一更新接口
+#include "../common/com.h"              // Public types and utility function definitions
+#include "../common/water_quality.h"    // Water quality data single instance class, used to obtain data to be sent
+#include "info_updater.h"               // Information updater base class, providing a unified update interface
 
 /**
  * @class SocketInfoUpdater
- * @brief 基于套接字的信息更新器，负责将实时水质数据通过网络发送到服务器
- * @details 继承自InfoUpdater抽象基类，通过构造函数接收已连接的套接字描述符，
- *          在重写的update方法中实现数据的获取、格式化和发送，通常与定时器配合
- *          周期性（如1秒/次）向服务器推送最新数据。
+ * @brief A socket-based information updater responsible for sending real-time water quality data to the server via the network
+ * @details Inherited from the InfoUpdater abstract base class, it receives a connected socket descriptor through the constructor,
+ *          Implement data retrieval, formatting, and transmission in the rewritten update method, typically in conjunction with a timer
+ *          Periodically (e.g., once per second) push the latest data to the server.
  */
 class SocketInfoUpdater: public InfoUpdater {
 private:
-    int sock;  ///< 已建立连接的套接字描述符，用于与服务器通信，由构造函数传入
+    int sock;  ///< A socket descriptor that has been established for communication with the server, passed in by the constructor
 
 public:
     /**
-     * @brief 构造函数，初始化套接字成员
-     * @param s 已连接的套接字描述符（需提前通过Socket::connectToServer创建）
-     * @note 套接字必须处于已连接状态，否则后续update方法可能发送失败
+     * @brief Constructor, initialise socket members
+     * @param s Connected socket descriptor (must be created in advance using Socket::connectToServer)
+     * @note The socket must be in a connected state, otherwise subsequent update methods may fail to send
      */
     SocketInfoUpdater(int s);
 
     /**
-     * @brief 重写基类纯虚方法，执行网络数据发送
-     * @details 从WaterQuality单例中获取最新的水质数据（温度、pH值、浊度等），
-     *          按预设格式（如字符串、JSON等）格式化后，通过sock套接字发送到服务器，
-     *          若发送失败会输出错误信息（具体错误处理逻辑由实现决定）。
+     * @brief Override the pure virtual method of the base class to execute network data transmission
+     * @details Retrieve the latest water quality data (temperature, pH value, turbidity, etc.) from the WaterQuality singleton,
+     *          After formatting according to the preset format (such as string, JSON, etc.), it is sent to the server via a socket,
+     *          If the transmission fails, an error message will be output (the specific error handling logic is determined by the implementation).
      */
     void update() override;
 };
