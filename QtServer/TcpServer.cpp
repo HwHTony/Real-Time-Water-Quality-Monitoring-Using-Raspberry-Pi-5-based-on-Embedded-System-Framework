@@ -12,13 +12,13 @@ TcpServer::TcpServer(quint16 port, QObject *parent)
     , tcpServer(new QTcpServer(this))
     , clientSocket(nullptr)
 {
-    // 启动服务器监听
+    // Start server listening
     if (!tcpServer->listen(QHostAddress::Any, port)) {
         emit connectionStatusChanged("🔴 Server Error: " + tcpServer->errorString());
         return;
     }
     
-    // 连接新客户端信号
+    // Connect new client signal
     connect(tcpServer, &QTcpServer::newConnection, this, &TcpServer::onNewConnection);
     emit connectionStatusChanged("🟢 Server started on port " + QString::number(port));
 }
@@ -31,10 +31,10 @@ TcpServer::~TcpServer()
     }
 }
 
-// 处理新客户端连接
+// Handling new client connections
 void TcpServer::onNewConnection()
 {
-    // 仅允许一个客户端连接
+    // Only one client connection is allowed
     if (clientSocket) {
         QTcpSocket* newSocket = tcpServer->nextPendingConnection();
         newSocket->write("Another client is already connected!");
@@ -43,7 +43,7 @@ void TcpServer::onNewConnection()
         return;
     }
     
-    // 保存客户端套接字并连接信号
+    // Save the client socket and connect the signal
     clientSocket = tcpServer->nextPendingConnection();
     connect(clientSocket, &QTcpSocket::disconnected, this, &TcpServer::onClientDisconnected);
     connect(clientSocket, &QTcpSocket::readyRead, this, &TcpServer::onReadyRead);
@@ -51,7 +51,7 @@ void TcpServer::onNewConnection()
     emit connectionStatusChanged("🔵 Client Connected: " + clientSocket->peerAddress().toString());
 }
 
-// 处理客户端断开连接
+// Handling client disconnects
 void TcpServer::onClientDisconnected()
 {
     emit connectionStatusChanged("🟠 Client Disconnected");
@@ -60,43 +60,43 @@ void TcpServer::onClientDisconnected()
     dataBuffer.clear();
 }
 
-// 读取客户端数据
+// Read client data
 void TcpServer::onReadyRead()
 {
     if (!clientSocket) return;
     
-    // 读取所有数据到缓冲区
+    // Read all data into the buffer
     QByteArray data = clientSocket->readAll();
     dataBuffer.append(data);
     qDebug() << "Received data: " << data;
     
-    // 解析缓冲区中的JSON数据
+    // Parse JSON data in the buffer
     parseJsonData(dataBuffer);
 }
 
-// 解析JSON数据并发射信号
+// Parsing JSON data and emitting signals
 void TcpServer::parseJsonData(QByteArray &buffer)
 {
-    // 查找完整的JSON对象（{...}）
+    // Find the complete JSON object（{...}）
     int start = buffer.indexOf('{');
     int end = buffer.indexOf('}', start);
     
     while (start != -1 && end != -1) {
-        // 提取并移除已解析的JSON片段
+        // Extract and remove parsed JSON fragments
         QByteArray jsonData = buffer.mid(start, end - start + 1);
         buffer.remove(0, end + 1);
         
-        // 解析JSON
+        // Parsing JSON
         QJsonParseError error;
         QJsonDocument doc = QJsonDocument::fromJson(jsonData, &error);
         if (error.error == QJsonParseError::NoError) {
-            emit sensorDataUpdated(doc.object()); // 发射解析后的数据
+            emit sensorDataUpdated(doc.object()); // Emit parsed data
         } else {
             qDebug() << "JSON parse error: " << error.errorString();
             emit connectionStatusChanged("🟠 JSON Error: " + error.errorString());
         }
         
-        // 继续查找下一个JSON对象
+        // Continue to search for the next JSON object
         start = buffer.indexOf('{');
         end = buffer.indexOf('}', start);
     }
