@@ -1,21 +1,21 @@
 # Set the minimum version requirement for CMake
 cmake_minimum_required(VERSION 3.10)
 
-# 设置项目名称
+# Set the project name
 project(QtServer)
 
-# 设置 C++ 标准
+# Setting the C++ Standard
 set(CMAKE_CXX_STANDARD 11)
 
-# 查找 Qt5 相关组件
+# Find Qt5 related components
 find_package(Qt5 COMPONENTS Core Gui Widgets Network REQUIRED)
 
-# 设置自动处理 Qt 的 MOC、UIC 和 RCC
+# Set up automatic processing of Qt's MOC, UIC and RCC
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-# 添加可执行文件
+# Adding an executable file
 add_executable(${PROJECT_NAME}
     main.cpp
     mainwindow.cpp
@@ -24,7 +24,7 @@ add_executable(${PROJECT_NAME}
     tcpserver.h
 )
 
-# 链接 Qt5 库
+# Linking Qt5 Libraries
 target_link_libraries(${PROJECT_NAME}
     Qt5::Core
     Qt5::Gui
