@@ -8,8 +8,8 @@
 #include <QByteArray>
 
 /**
- * @brief TCP服务器类，负责网络通信逻辑
- * 职责：处理客户端连接、数据收发、JSON解析，与UI层通过信号解耦
+ * @brief TCP server class, responsible for network communication logic
+ * Responsibilities: handle client connections, data sending and receiving, JSON parsing, and decouple from the UI layer through signals
  */
 class TcpServer : public QObject
 {
@@ -21,34 +21,34 @@ public:
 
 signals:
     /**
-     * @brief 当接收到有效传感器数据时发射
-     * @param data 解析后的JSON对象
+     * @brief Emitted when valid sensor data is received
+     * @param data Parsed JSON object
      */
     void sensorDataUpdated(const QJsonObject& data);
 
     /**
-     * @brief 当连接状态变化时发射
-     * @param status 状态描述
+     * @brief Emitted when the connection state changes
+     * @param status Status description
      */
     void connectionStatusChanged(const QString& status);
 
 private slots:
-    void onNewConnection();       // 处理新连接
-    void onClientDisconnected();  // 处理客户端断开
-    void onReadyRead();           // 读取客户端数据
+    void onNewConnection();       // Handling new connections
+    void onClientDisconnected();  // Handling Client Disconnects
+    void onReadyRead();           // Read client data
 
 private:
     /**
-     * @brief 解析缓冲区中的JSON数据
-     * @param buffer 待解析的字节缓冲区
+     * @brief Parse JSON data in the buffer
+     * @param buffer The byte buffer to be parsed
      */
     void parseJsonData(QByteArray& buffer);
 
 private:
-    QTcpServer* tcpServer;        // TCP服务器实例
-    QTcpSocket* clientSocket;     // 当前连接的客户端套接字
-    QByteArray dataBuffer;        // 数据缓冲区（处理粘包/拆包）
-    quint16 port;                 // 监听端口
+    QTcpServer* tcpServer;        // TCP Server Example
+    QTcpSocket* clientSocket;     // The currently connected client socket
+    QByteArray dataBuffer;        // Data buffer (handling packet sticking/unpacking)
+    quint16 port;                 // Listening Port
 };
 
 #endif // TCPSERVER_H
