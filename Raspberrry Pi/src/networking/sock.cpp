@@ -8,152 +8,152 @@
 #include "sock.h"
 
 /**
- * @brief 连接到TCP服务器（带重试机制）
- * @param sock [输出] 成功连接后返回的套接字描述符
- * @param ip 服务器IP地址字符串（如"192.168.1.2"）
- * @param port 服务器端口号
- * @return 0表示成功，-1表示失败
- * @note 内部实现3次重试，失败时通过日志输出错误信息
+ * @brief Connect to the TCP server (with retry mechanism)
+ * @param sock The socket descriptor returned after a successful connection is established.
+ * @param ip Server IP address string (such as "192.168.1.2")
+ * @param port Server port number
+ * @return 0Indicates success，-1 indicates failure
+ * @note Perform 3 internal retries. If the operation fails, output the error message in the log.
  */
 int Socket::connectToServer(int *sock, const char* ip, int port) {
     if (sock == nullptr || ip == nullptr || port < 1 || port > 65535) {
-        std::cerr << "错误：无效的参数 - sock不可为空，IP不可为空，端口需在1-65535范围内" << std::endl;
+        std::cerr << "Error: Invalid parameters - sock cannot be null, IP cannot be null, port must be within the range of 1 to 65535." << std::endl;
         return -1;
     }
 
     struct sockaddr_in server_addr;
-    const int max_retries = 3;       // 最大重试次数
+    const int max_retries = 3;       // Maximum retry count
     int retry_count = 0;
 
-    // 循环重试连接
+    // Repeated connection attempts in a loop
     while (retry_count < max_retries) {
-        // 1. 创建TCP套接字（IPv4协议，字节流）
+        // 1. Create a TCP socket (IPv4 protocol, byte stream)
         *sock = socket(AF_INET, SOCK_STREAM, 0);
         if (*sock < 0) {
-            std::cerr << "错误：套接字创建失败 - " << strerror(errno) << std::endl;
+            std::cerr << "Error: Socket creation failed - " << strerror(errno) << std::endl;
             return -1;
         }
 
-        // 2. 配置服务器地址结构
-        memset(&server_addr, 0, sizeof(server_addr));  // 初始化地址结构体
-        server_addr.sin_family = AF_INET;              // IPv4协议
-        server_addr.sin_port = htons(port);             // 端口号转为网络字节序（大端）
+        // 2. Configure the server address structure
+        memset(&server_addr, 0, sizeof(server_addr));  // Initialize the address structure
+        server_addr.sin_family = AF_INET;              // IPv4 Agreement
+        server_addr.sin_port = htons(port);             // Port number is converted to network byte order (big-endian)
 
-        // 转换IP地址（字符串转网络字节序）
+        // Convert IP address (string to network byte order)
         if (inet_pton(AF_INET, ip, &server_addr.sin_addr) <= 0) {
-            close(*sock);  // 释放当前无效套接字
+            close(*sock);  // Release the current invalid socket
             retry_count++;
-            std::cerr << "第" << retry_count << "次尝试失败：无效的IP地址（" << ip << "）" << std::endl;
-            sleep(1);  // 重试前等待1秒
+            std::cerr << "The 1st" << retry_count << "This attempt failed: Invalid IP address（" << ip << "）" << std::endl;
+            sleep(1);  // Wait for 1 second before retrying.
             continue;
         }
 
-        // 3. 尝试连接服务器
+        // 3. Attempt to connect to the server
         if (connect(*sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-            close(*sock);  // 释放当前无效套接字
+            close(*sock);  // Release the current invalid socket
             retry_count++;
-            std::cerr << "第" << retry_count << "次尝试失败：连接服务器（" << ip << ":" << port << "）失败：" << strerror(errno) << std::endl;
-            sleep(1);  // 重试前等待1秒
+            std::cerr << "The 1st" << retry_count << "This attempt failed: Connecting to the server（" << ip << ":" << port << "）Failure：" << strerror(errno) << std::endl;
+            sleep(1);  // Wait for 1 second before retrying.
         } else {
-            // 连接成功
-            std::cout << "成功连接到服务器：" << ip << ":" << port << std::endl;
-            return 0; // 成功返回0
+            // Connection successful
+            std::cout << "Successfully connected to the server：" << ip << ":" << port << std::endl;
+            return 0; // Successful return0
         }
     }
 
-    // 超过最大重试次数仍失败
-    std::cerr << "错误：超过最大重试次数（" << max_retries << "次），连接服务器失败" << std::endl;
+    // Failed even after exceeding the maximum retry limit
+    std::cerr << "Error: Exceeded the maximum number of retry attempts（" << max_retries << "This attempt failed: Connecting to the server" << std::endl;
     return -1;
 }
 
 
 /**
- * @brief 初始化TCP服务器（创建监听套接字并绑定端口）
- * @param ser_sock [输出] 服务器监听套接字描述符
- * @param cli_sock [输出] 客户端连接套接字描述符（预留，实际应在accept时获取）
- * @note 该函数仅完成服务器初始化，需在外部调用accept获取客户端连接
+ * @brief Initialize the TCP server (create a listening socket and bind to the port)
+ * @param ser_sock The server listens to the socket descriptor.
+ * @param cli_sock The client-side connection socket descriptor (reserved; it should be obtained during the accept operation)
+ * @note This function only performs the server initialization. It needs to be called externally via 'accept' to obtain the client connection.
  */
 void Socket::init(int *ser_sock, int *cli_sock) {
     if (ser_sock == nullptr || cli_sock == nullptr) {
-        throw std::invalid_argument("无效的参数：ser_sock和cli_sock不可为空");
+        throw std::invalid_argument("Invalid parameters: ser_sock and cli_sock cannot be null.");
     }
 
     struct sockaddr_in server_addr, client_addr;
     socklen_t client_addr_len = sizeof(client_addr);
 
-    // 1. 创建TCP监听套接字
+    // 1. Create a TCP listening socket
     *ser_sock = socket(AF_INET, SOCK_STREAM, 0);
     if (*ser_sock < 0) {
-        throw std::runtime_error("监听套接字创建失败：" + std::string(strerror(errno)));
+        throw std::runtime_error("Listening socket creation failed：" + std::string(strerror(errno)));
     }
 
-    // 2. 设置套接字选项（允许端口复用，避免服务器重启时端口占用）
+    // 2. Set socket options (allowing port reuse to avoid port occupation when the server restarts)
     int opt = 1;
     if (setsockopt(*ser_sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
         close(*ser_sock);
-        throw std::runtime_error("设置套接字选项失败：" + std::string(strerror(errno)));
+        throw std::runtime_error("Failed to set socket options：" + std::string(strerror(errno)));
     }
 
-    // 3. 配置服务器地址结构
+    // 3. Configure the server address structure
     memset(&server_addr, 0, sizeof(server_addr));
-    server_addr.sin_family = AF_INET;                  // IPv4协议
-    server_addr.sin_addr.s_addr = INADDR_ANY;          // 监听所有可用网络接口（0.0.0.0）
-    server_addr.sin_port = htons(PORT);                // 端口号转为网络字节序
+    server_addr.sin_family = AF_INET;                  // IPv4 Agreement
+    server_addr.sin_addr.s_addr = INADDR_ANY;          // Monitor all available network interfaces（0.0.0.0）
+    server_addr.sin_port = htons(PORT);                // Port number converted to network byte order
 
-    // 4. 绑定套接字到指定地址和端口
+    // 4. Bind the socket to the specified address and port
     if (bind(*ser_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
         close(*ser_sock);
-        throw std::runtime_error("绑定端口（" + std::to_string(PORT) + "）失败：" + std::string(strerror(errno)));
+        throw std::runtime_error("Binding port（" + std::to_string(PORT) + "）Failure：" + std::string(strerror(errno)));
     }
 
-    // 5. 开始监听（最大等待连接队列长度为5）
+    // 5. Start listening (maximum waiting connection queue length is 5)
     if (listen(*ser_sock, 5) < 0) {
         close(*ser_sock);
-        throw std::runtime_error("监听端口（" + std::to_string(PORT) + "）失败：" + std::string(strerror(errno)));
+        throw std::runtime_error("Listening port（" + std::to_string(PORT) + "）Failure：" + std::string(strerror(errno)));
     }
 
-    // 初始化客户端套接字（默认-1表示未连接）
+    // Initialize the client socket (default -1 indicates not connected)
     *cli_sock = -1;
 
-    std::cout << "服务器初始化完成，正在端口 " << PORT << " 监听连接..." << std::endl;
+    std::cout << "Server initialization is complete. Currently, it is at the port... " << PORT << " Listening to the connection..." << std::endl;
 }
 
 
 /**
- * @brief 处理客户端连接（接收数据并回显）
- * @param client_socket 客户端套接字描述符
- * @note 建议在独立线程中调用，支持并发处理多个客户端
+ * @brief Handling client connections (receiving data and echoing)
+ * @param client_socket Client socket descriptor
+ * @note It is recommended to be called in an independent thread, which supports concurrent processing of multiple clients.
  */
 void Socket::handleClient(int client_socket) {
     if (client_socket < 0) {
-        throw std::invalid_argument("无效的客户端套接字：" + std::to_string(client_socket));
+        throw std::invalid_argument("Invalid client socket：" + std::to_string(client_socket));
     }
 
-    char buffer[BUFFER];  // 数据缓冲区
-    ssize_t bytes_read;   // 接收的字节数
+    char buffer[BUFFER];  // Data buffer zone
+    ssize_t bytes_read;   // Received byte count
 
-    std::cout << "开始处理客户端（套接字：" << client_socket << "）的数据..." << std::endl;
+    std::cout << "Start processing the client (socket)：" << client_socket << "）data..." << std::endl;
 
-    // 循环接收客户端数据
+    // Repeatedly receive client data
     while ((bytes_read = recv(client_socket, buffer, BUFFER - 1, 0)) > 0) {
-        buffer[bytes_read] = '\0';  // 确保字符串以null结尾
-        std::cout << "收到客户端（" << client_socket << "）数据：" << buffer << std::endl;
+        buffer[bytes_read] = '\0';  // Make sure the string ends with a null character.
+        std::cout << "Received from the client（" << client_socket << "）data：" << buffer << std::endl;
 
-        // 回显数据给客户端（可扩展为业务逻辑处理）
+        // Send the echoed data back to the client (which can be extended to business logic processing)
         if (send(client_socket, buffer, bytes_read, 0) < 0) {
-            std::cerr << "向客户端（" << client_socket << "）发送数据失败：" << strerror(errno) << std::endl;
+            std::cerr << "To the client（" << client_socket << "）Data transmission failed：" << strerror(errno) << std::endl;
             break;
         }
     }
 
-    // 处理连接结束或错误
+    // Handle connection termination or errors
     if (bytes_read == 0) {
-        std::cout << "客户端（" << client_socket << "）主动断开连接" << std::endl;
+        std::cout << "Client side（" << client_socket << "）Initiate the disconnection of the connection" << std::endl;
     } else if (bytes_read < 0) {
-        std::cerr << "接收客户端（" << client_socket << "）数据时发生错误：" << strerror(errno) << std::endl;
+        std::cerr << "Receiving client（" << client_socket << "）There is an error in the data.：" << strerror(errno) << std::endl;
     }
 
-    // 关闭客户端套接字，释放资源
+    // Close the client socket and release the resources.
     close(client_socket);
-    std::cout << "客户端（" << client_socket << "）连接已关闭" << std::endl;
+    std::cout << "Client side（" << client_socket << "）Connection has been closed." << std::endl;
 }
