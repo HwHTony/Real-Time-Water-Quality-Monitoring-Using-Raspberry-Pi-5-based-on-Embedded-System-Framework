@@ -1,27 +1,27 @@
 #include "../main.cpp"
 #include <gtest/gtest.h>
 
-// 模拟 PCF8591 类
+// A simulated PCF8591 class
 class MockPCF8591 : public PCF8591 {
 public:
     int readMultiple(int* channels, int numChannels, int* results) override {
-        // 模拟读取结果
+        // Simulated reading result
         for (int i = 0; i < numChannels; ++i) {
-            results[i] = 128; // 模拟固定值
+            results[i] = 128; // Simulated fixed value
         }
-        return 0; // 模拟成功返回 0
+        return 0; // Simulation successfully completed 0
     }
 };
 
-// 模拟 DS18B20 类
+// Simulated DS18B20 type
 class MockDS18B20 : public DS18B20 {
 public:
     float readTemperature() override {
-        return 25.0; // 模拟固定温度值
+        return 25.0; // Simulated fixed temperature value
     }
 };
 
-// 测试数据采集定时器回调函数
+// Test data acquisition timer callback function
 TEST(MainTest, DataCollectionTimerCallback) {
     MockPCF8591 pcf8591;
     MockDS18B20 ds18b20;
@@ -39,59 +39,59 @@ TEST(MainTest, DataCollectionTimerCallback) {
     EXPECT_FLOAT_EQ(g_water_quality.pH, 14.0 - 128 * 14.0 / 255.0);
 }
 
-// 测试调试信息更新函数
+// Update function for test and debug information
 TEST(MainTest, UpdateDebugInfo) {
-    // 模拟水质参数
+    // Simulated water quality parameters
     g_water_quality.turbidity = 50.0;
     g_water_quality.ds18b20 = 20.0;
     g_water_quality.pH = 7.0;
 
-    // 重定向标准输出到缓冲区
+    // Redirect the standard output to the buffer
     std::stringstream buffer;
     std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
 
     update_debug_info();
 
-    // 恢复标准输出
+    // Restore standard output
     std::cout.rdbuf(old);
 
     std::string output = buffer.str();
-    EXPECT_TRUE(output.find("调试信息更新") != std::string::npos);
-    EXPECT_TRUE(output.find("AIN0值 -> 浊度: 50") != std::string::npos);
-    EXPECT_TRUE(output.find("DS18B20值 -> 温度: 20℃") != std::string::npos);
-    EXPECT_TRUE(output.find("pH值 -> pH: 7") != std::string::npos);
+    EXPECT_TRUE(output.find("Debugging information update") != std::string::npos);
+    EXPECT_TRUE(output.find("AIN0 value -> Turbidity: 50") != std::string::npos);
+    EXPECT_TRUE(output.find("DS18B20 value -> Temperature: 20℃") != std::string::npos);
+    EXPECT_TRUE(output.find("pH value -> pH: 7") != std::string::npos);
 }
 
-// 测试 TFT 信息更新函数
+// Test the TFT information update function
 TEST(MainTest, UpdateTFTInfo) {
-    // 模拟水质参数
+    // Simulated water quality parameters
     g_water_quality.turbidity = 60.0;
     g_water_quality.ds18b20 = 22.0;
     g_water_quality.pH = 7.5;
 
     update_tft_info();
 
-    // 由于 TFTFreetype 类的具体实现，这里无法直接验证绘制结果
-    // 可以考虑在 TFTFreetype 类中添加一些方法来获取绘制信息进行验证
+    // Due to the specific implementation of the TFTFreetype class, it is not possible to directly verify the drawing result here.
+    // It is advisable to add some methods to the TFTFreetype class to obtain the drawing information for verification purposes.
 }
 
-// 测试套接字通信函数
+// Test the socket communication function
 TEST(MainTest, UpdateSocketInfo) {
-    // 模拟水质参数
+    // Simulated water quality parameters
     g_water_quality.turbidity = 70.0;
     g_water_quality.ds18b20 = 23.0;
     g_water_quality.pH = 8.0;
 
-    // 模拟套接字
-    int sock = 1; // 模拟套接字描述符
+    // Simulated socket
+    int sock = 1; // Simulated socket descriptor
 
-    // 重定向标准输出到缓冲区
+    // Redirect the standard output to the buffer
     std::stringstream buffer;
     std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
 
     update_socket_info(sock);
 
-    // 恢复标准输出
+    // Restore standard output
     std::cout.rdbuf(old);
 
     std::string output = buffer.str();
