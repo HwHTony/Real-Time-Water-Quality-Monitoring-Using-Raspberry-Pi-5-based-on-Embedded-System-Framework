@@ -3,8 +3,8 @@
 #include <iostream>
 
 void DebugInfoUpdater::update() {
-    std::cout << "调试信息更新" << std::endl;
-    std::cout << "AIN0值 -> 浊度: " << WaterQuality::getInstance().getTurbidity() << std::endl;
-    std::cout << "DS18B20值 -> 温度: " << WaterQuality::getInstance().getDS18B20() << "℃" << std::endl;
-    std::cout << "pH值 -> pH: " << WaterQuality::getInstance().getpH() << std::endl;
+    std::cout << "Debugging information update" << std::endl;
+    std::cout << "AIN0 value -> turbidity: " << WaterQuality::getInstance().getTurbidity() << std::endl;
+    std::cout << "DS18B20 value -> temperature: " << WaterQuality::getInstance().getDS18B20() << "℃" << std::endl;
+    std::cout << "pH value -> pH: " << WaterQuality::getInstance().getpH() << std::endl;
 }
