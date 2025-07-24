@@ -52,7 +52,7 @@ void EventLoop::add_fd(int fd, std::function<void()> handler) {
  */
 void EventLoop::run() {
     while (running) {  // Atomic variable control loop start/stop (thread-safe)
-        // 等待事件发生（-1 indicates infinite blocking until an event is triggered）
+        // Waiting for an event to occur（-1 indicates infinite blocking until an event is triggered）
         int nfds = epoll_wait(epoll_fd, events, MAX_EVENTS, -1);
         if (nfds == -1) {
             if (errno == EINTR)  // Handling signal interruptions
@@ -64,7 +64,7 @@ void EventLoop::run() {
         // Iterate through all triggered events
         for (int i = 0; i < nfds; ++i) {
             if (events[i].events & EPOLLIN) {  // Check whether it is a read event
-                // 从data.ptrObtain the processing function pointer and call it
+                // From data.ptrObtain the processing function pointer and call it
                 auto handler = static_cast<std::function<void()>*>(events[i].data.ptr);
                 (*handler)();  // Execute event handling function
             }
