@@ -2,91 +2,90 @@
 #define WATER_QUALITY_H
 
 /**
- * @brief 水质监测数据的单例类（饿汉式实现）
+ * @brief Single instance class for water quality monitoring data (Hungry Man implementation)
  * 
- * 该类采用饿汉式单例模式设计，在程序启动时立即创建实例，
- * 确保线程安全且无需考虑内存泄漏问题。用于存储和管理水质监测系统中的各项参数，
- * 包括浊度、pH值和温度。系统中任何模块都可以通过该类获取和更新当前的水质数据。
+ * This class is designed using the starving singleton pattern, and an instance is created immediately when the program starts，
+ * Ensure thread safety and eliminate concerns about memory leaks. Used to store and manage various parameters in water quality monitoring systems,
+ * Including turbidity, pH value, and temperature. Any module in the system can obtain and update the current water quality data through this class.
  */
 class WaterQuality {
 private:
-    float turbidity;  ///< 浊度值，单位根据传感器而定
-    float pH;         ///< pH值，反映水体酸碱度
-    float ds18b20;    ///< DS18B20温度传感器测得的温度值，单位为摄氏度
-
+    float turbidity;  ///< Turbidity value, unit depends on sensor
+    float pH;         ///< pH value, reflecting the acidity or alkalinity of water
+    float ds18b20;    ///< Temperature values measured by the DS18B20 temperature sensor, in degrees Celsius
     /**
-     * @brief 私有构造函数
+     * @brief Private constructor
      * 
-     * 初始化所有水质参数为0，并确保该类不能被外部实例化。
+     * Initialise all water quality parameters to 0 and ensure that this class cannot be instantiated externally.
      */
     WaterQuality() : turbidity(0), pH(0), ds18b20(0) {}
 
     /**
-     * @brief 禁用拷贝构造函数
+     * @brief Disable copy constructors
      * 
-     * 防止单例实例被复制
+     * Prevent singleton instances from being copied
      */
     WaterQuality(const WaterQuality&) = delete;
 
     /**
-     * @brief 禁用赋值运算符
+     * @brief Disable assignment operators
      * 
-     * 防止单例实例被赋值
+     * Prevent singleton instances from being assigned values
      */
     WaterQuality& operator=(const WaterQuality&) = delete;
 
     /**
-     * @brief 静态私有实例
+     * @brief Static private instance
      * 
-     * 在程序启动时立即初始化，保证线程安全
+     * Initialise immediately when the program starts, ensuring thread safety
      */
     static  WaterQuality instance;
 
 public:
     /**
-     * @brief 获取单例实例
+     * @brief Obtain a singleton instance
      * 
-     * 直接返回已创建的单例实例，无需进行线程同步检查
+     * Directly return the created singleton instance without performing thread synchronisation checks
      * 
-     * @return WaterQuality& 单例实例的引用
+     * @return WaterQuality& Reference to a singleton instance
      */
     static WaterQuality& getInstance() {
         return instance;
     }
 
     /**
-     * @brief 设置浊度值
-     * @param value 新的浊度值
+     * @brief Set turbidity value
+     * @param value New turbidity values
      */
     void setTurbidity(float value) { turbidity = value; }
 
     /**
-     * @brief 设置pH值
-     * @param value 新的pH值
+     * @brief Set pH value
+     * @param value New pH value
      */
     void setpH(float value) { pH = value; }
 
     /**
-     * @brief 设置温度值
-     * @param value 新的温度值（来自DS18B20传感器）
+     * @brief Set temperature value
+     * @param value New temperature value (from DS18B20 sensor)
      */
     void setDS18B20(float value) { ds18b20 = value; }
 
     /**
-     * @brief 获取当前浊度值
-     * @return float 当前浊度值
+     * @brief Obtain the current turbidity value
+     * @return float Current turbidity value
      */
     float getTurbidity() const { return turbidity; }
 
     /**
-     * @brief 获取当前pH值
-     * @return float 当前pH值
+     * @brief Obtain the current pH value
+     * @return float Current pH value
      */
     float getpH() const { return pH; }
 
     /**
-     * @brief 获取当前温度值
-     * @return float 当前温度值
+     * @brief Get the current temperature value
+     * @return float Current temperature value
      */
     float getDS18B20() const { return ds18b20; }
 };
