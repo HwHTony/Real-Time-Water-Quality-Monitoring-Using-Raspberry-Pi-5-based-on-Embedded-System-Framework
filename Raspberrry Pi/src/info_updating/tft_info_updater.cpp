@@ -1,7 +1,7 @@
 // tft_info_updater.cpp
 #include "tft_info_updater.h"
 
-#include <cstring>  // 添加 cstring 头文件
+#include <cstring>  // Add the cstring header file
 #include <cwchar>
 
 void TFTInfoUpdater::update() {
