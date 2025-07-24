@@ -1,36 +1,36 @@
 /**
  * @file data_collector.h
- * @brief 水质数据采集模块的核心接口
- * @details 定义了从各类传感器采集环境数据的功能抽象，
- *          包括温度、pH值、溶解氧等水质参数的获取。
+ * @brief Core interface of water quality data acquisition module
+ * @details Defines the functional abstraction of collecting environmental data from various sensors.
+ *          Including the acquisition of water quality parameters such as temperature, pH value, dissolved oxygen, etc.
  */
 
 #ifndef DATA_COLLECTOR_H
 #define DATA_COLLECTOR_H
 
-#include "../common/com.h"          // 通信协议与基础类型定义
-#include "../data_collection/pcf8591.h"  // ADC转换器驱动
-#include "../data_collection/ds18b20.h"  // 温度传感器驱动
-#include "../common/water_quality.h"  // 水质数据结构定义
+#include "../common/com.h"          // Communication protocol and basic type definition
+#include "../data_collection/pcf8591.h"  // ADC Converter Driver
+#include "../data_collection/ds18b20.h"  // Temperature sensor driver
+#include "../common/water_quality.h"  // Water quality data structure definition
 
 /**
  * @class DataCollector
- * @brief 水质数据采集器，负责协调多个传感器工作
- * @details 通过组合不同类型的传感器驱动，实现对水质参数的周期性采集，
- *          并将原始数据转换为标准的水质指标。
+ * @brief Water quality data collector, responsible for coordinating the work of multiple sensors
+ * @details By combining different types of sensor drivers, the periodic collection of water quality parameters can be achieved.
+ *          and convert the raw data into standard water quality indicators.
  */
 class DataCollector {
 private:
-    PCF8591 pcf8591;  // 模拟信号采集器（ADC），用于pH值、浊度等传感器
-    DS18B20 ds18b20;  // 数字温度传感器，提供高精度水温测量
+    PCF8591 pcf8591;  // Analog signal acquisition (ADC) for sensors such as pH and turbidity
+    DS18B20 ds18b20;  // Digital temperature sensor, providing high-precision water temperature measurement
 
 public:
     /**
-     * @brief 执行一次完整的数据采集周期
-     * @details 按预设顺序从所有传感器读取数据，进行单位转换和校准，
-     *          并将结果存储到全局数据结构中。
-     * @note 调用频率应根据传感器特性和系统需求调整，
-     *       通常建议不低于1Hz以捕获水质变化。
+     * @brief Perform a complete data collection cycle
+     * @details Read data from all sensors in a preset order, perform unit conversion and calibration,
+     *          and store the results into a global data structure.
+     * @note The calling frequency should be adjusted according to the sensor characteristics and system requirements.
+     *       It is usually recommended to go no lower than 1Hz to capture changes in water quality.
      * @see WaterQuality
      */
     void collectData();
