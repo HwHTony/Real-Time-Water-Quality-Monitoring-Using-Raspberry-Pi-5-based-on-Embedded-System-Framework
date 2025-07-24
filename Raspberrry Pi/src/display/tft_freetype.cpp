@@ -3,8 +3,8 @@
 #include <cstdlib>
 
 /**
- * @brief 构造函数，初始化TFT屏幕及相关资源
- * 初始化GPIO、SPI通信、LCD显示屏和FreeType字体库，点亮背光并清屏
+ * @brief Constructor to initialize the TFT screen and related resources
+ * Initialize GPIO, SPI communication, LCD display and FreeType font library, turn on the backlight and clear the screen
  */
 TFTFreetype::TFTFreetype() {
     gpioInit();
@@ -18,8 +18,8 @@ TFTFreetype::TFTFreetype() {
 }
 
 /**
- * @brief 析构函数，释放所有资源
- * 释放FreeType库资源、关闭SPI设备、释放GPIO引脚和芯片资源
+ * @brief Destructor, releases all resources
+ * Release FreeType library resources, close SPI devices, release GPIO pins and chip resources
  */
 TFTFreetype::~TFTFreetype() {
     FT_Done_Face(face);
@@ -33,8 +33,8 @@ TFTFreetype::~TFTFreetype() {
 }
 
 /**
- * @brief 初始化GPIO资源
- * 打开GPIO芯片，获取控制引脚（复位、数据/命令、背光、片选）并配置为输出模式
+ * @brief Initialize GPIO resources
+ * Open the GPIO chip, get the control pins (reset, data/command, backlight, chip select) and configure them as output mode
  */
 void TFTFreetype::gpioInit() {
     chip = gpiod_chip_open_by_name(gpio_chip);
@@ -43,16 +43,16 @@ void TFTFreetype::gpioInit() {
     blk_line = gpiod_chip_get_line(chip, BLK_PIN);
     cs_line = gpiod_chip_get_line(chip, CS_PIN);
 
-    // 配置为输出模式
+    // Configured as output mode
     gpiod_line_request_output(rst_line, "rst", 0);
     gpiod_line_request_output(dc_line, "dc", 0);
     gpiod_line_request_output(blk_line, "blk", 0);
-    gpiod_line_request_output(cs_line, "cs", 1); // 默认禁用SPI
+    gpiod_line_request_output(cs_line, "cs", 1); // SPI is disabled by default
 }
 
 /**
- * @brief 初始化SPI通信
- * 打开SPI设备文件，配置SPI通信速度
+ * @brief Initialize SPI communication
+ * Open the SPI device file and configure the SPI communication speed
  */
 void TFTFreetype::spiInit() {
     spi_fd = open(SPI_DEV, O_RDWR);
@@ -61,8 +61,8 @@ void TFTFreetype::spiInit() {
 }
 
 /**
- * @brief 向LCD发送控制命令
- * @param cmd 要发送的控制命令
+ * @brief Send control commands to the LCD
+ * @param cmd Control command to send
  */
 void TFTFreetype::sendCommand(uint8_t cmd) {
     gpiod_line_set_value(cs_line, 0);
@@ -72,9 +72,9 @@ void TFTFreetype::sendCommand(uint8_t cmd) {
 }
 
 /**
- * @brief 向LCD发送数据
- * @param data 数据缓冲区指针
- * @param len 数据长度
+ * @brief Sending data to LCD
+ * @param data Data buffer pointer
+ * @param len Data length
  */
 void TFTFreetype::sendData(uint8_t *data, int len) {
     gpiod_line_set_value(dc_line, 1);
@@ -84,11 +84,11 @@ void TFTFreetype::sendData(uint8_t *data, int len) {
 }
 
 /**
- * @brief 初始化LCD显示屏
- * 执行硬件复位，配置显示方向、颜色模式等参数，最终开启显示
+ * @brief Initialize LCD display
+ * Perform a hardware reset, configure display direction, color mode and other parameters, and finally turn on the display
  */
 void TFTFreetype::lcdInit() {
-    // 硬件复位
+    // Hardware Reset
     gpiod_line_set_value(rst_line, 0);
     usleep(100000);
     gpiod_line_set_value(rst_line, 1);
@@ -98,26 +98,26 @@ void TFTFreetype::lcdInit() {
     usleep(500000);
 
     sendCommand(0x36);  // MADCTL
-    uint8_t madctl[] = {0xC8}; // RGB顺序调整
+    uint8_t madctl[] = {0xC8}; // RGB order adjustment
     sendData(madctl, 1);
 
-    sendCommand(0x3A);  // 颜色模式
+    sendCommand(0x3A);  // Color Mode
     uint8_t colmod[] = {0x05}; // RGB565
     sendData(colmod, 1);
 
-    sendCommand(0x29);  // 开启显示
+    sendCommand(0x29);  // Turn on display
 }
 
 /**
- * @brief 设置LCD显示窗口（区域）
- * @param x0 窗口左上角x坐标
- * @param y0 窗口左上角y坐标
- * @param x1 窗口右下角x坐标
- * @param y1 窗口右下角y坐标
+ * @brief Set LCD display window (area)
+ * @param x0 The x coordinate of the upper left corner of the window
+ * @param y0 The y coordinate of the upper left corner of the window
+ * @param x1 The x coordinate of the lower right corner of the window
+ * @param y1 The y coordinate of the lower right corner of the window
  */
 void TFTFreetype::setWindow(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
     sendCommand(0x2A);
-    uint8_t col_data[] = {x0 >> 8, x0 & 0xFF, x1 >> 8, x1 & 0xFF};  // 高位在前
+    uint8_t col_data[] = {x0 >> 8, x0 & 0xFF, x1 >> 8, x1 & 0xFF};  // High position first
     sendData(col_data, 4);
 
     sendCommand(0x2B);
@@ -126,8 +126,8 @@ void TFTFreetype::setWindow(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
 }
 
 /**
- * @brief 用指定颜色填充整个屏幕
- * @param color 填充颜色（RGB565格式）
+ * @brief Fill the entire screen with the specified color
+ * @param color Fill color (RGB565 format)
  */
 void TFTFreetype::fillScreen(uint16_t color) {
     uint8_t color_hi = color >> 8;
@@ -149,12 +149,12 @@ void TFTFreetype::fillScreen(uint16_t color) {
 }
 
 /**
- * @brief 用指定颜色刷新指定区域
- * @param color 刷新颜色（RGB565格式）
- * @param x 区域左上角x坐标
- * @param y 区域左上角y坐标
- * @param w 区域宽度
- * @param h 区域高度
+ * @brief Refresh the specified area with the specified color
+ * @param color Refresh color (RGB565 format)
+ * @param x The x coordinate of the upper left corner of the region
+ * @param y The y coordinate of the upper left corner of the region
+ * @param w Area Width
+ * @param h Area Height
  */
 void TFTFreetype::freshScreen(uint16_t color, int x, int y, int w, int h) {
     uint8_t color_hi = color >> 8;
@@ -176,9 +176,9 @@ void TFTFreetype::freshScreen(uint16_t color, int x, int y, int w, int h) {
 }
 
 /**
- * @brief 初始化FreeType字体库
- * @param font_path 字体文件路径
- * @param font_size 字体大小（像素）
+ * @brief Initialize the FreeType font library
+ * @param font_path Font file path
+ * @param font_size Font size (pixels)
  */
 void TFTFreetype::freetypeInit(const char *font_path, int font_size) {
     FT_Error error = FT_Init_FreeType(&library);
@@ -201,8 +201,8 @@ void TFTFreetype::freetypeInit(const char *font_path, int font_size) {
 }
 
 /**
- * @brief 加载指定字符的字形数据
- * @param c 要加载的字符（宽字符）
+ * @brief Loads the glyph data for the specified character
+ * @param c character to load (wide character)
  */
 void TFTFreetype::loadGlyph(wchar_t c) {
     FT_UInt glyph_index = FT_Get_Char_Index(face, c);
@@ -216,11 +216,11 @@ void TFTFreetype::loadGlyph(wchar_t c) {
 }
 
 /**
- * @brief 在指定位置绘制单个字符
- * @param x 绘制起点x坐标
- * @param y 绘制起点y坐标
- * @param c 要绘制的字符（宽字符）
- * @param fg 字符前景色（RGB565格式）
+ * @brief Draws a single character at the specified position
+ * @param x Draw the starting point x coordinate
+ * @param y Draw the starting point y coordinate
+ * @param c The character to be drawn (wide character)
+ * @param fg Character foreground color (RGB565 format)
  */
 void TFTFreetype::drawChar(uint8_t x, uint8_t y, wchar_t c, uint16_t fg) {
     loadGlyph(c);
@@ -247,18 +247,18 @@ void TFTFreetype::drawChar(uint8_t x, uint8_t y, wchar_t c, uint16_t fg) {
 }
 
 /**
- * @brief 在指定位置绘制字符串
- * @param x 绘制起点x坐标
- * @param y 绘制起点y坐标
- * @param str 要绘制的字符串（宽字符）
- * @param fg 字符串前景色（RGB565格式）
- * @note 包含自动换行处理，超出屏幕宽度时换行
+ * @brief Draws a string at the specified position
+ * @param x Draw the starting point x coordinate
+ * @param y Draw the starting point y coordinate
+ * @param str The string to draw (in wide characters)
+ * @param fg String foreground color (RGB565 format)
+ * @note Contains automatic line wrapping processing, wrapping when exceeding the screen width
  */
 void TFTFreetype::drawString(uint8_t x, uint8_t y, const wchar_t *str, uint16_t fg) {
     while (*str) {
         drawChar(x, y, *str++, fg);
-        x += glyph_slot->advance.x >> 6; // 每个像素6个位
-        if (x >= 160 - 8) { // 换行处理
+        x += glyph_slot->advance.x >> 6; // 6 bits per pixel
+        if (x >= 160 - 8) { // Line break processing
             x = 0;
             y += glyph_slot->advance.y >> 6;
         }
