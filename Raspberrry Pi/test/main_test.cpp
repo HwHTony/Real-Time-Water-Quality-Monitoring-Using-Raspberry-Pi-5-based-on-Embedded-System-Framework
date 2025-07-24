@@ -99,7 +99,7 @@ TEST(MainTest, UpdateSocketInfo) {
     EXPECT_TRUE(output.find(expected) != std::string::npos);
 }
 
-// 删除自定义的 main 函数，使用 Google Test 提供的 main 函数
+// Remove the custom main function and use the main function provided by Google Test instead.
 // int main(int argc, char **argv) {
 //     ::testing::InitGoogleTest(&argc, argv);
 //     return RUN_ALL_TESTS();
